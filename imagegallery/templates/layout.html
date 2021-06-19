@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/gallery.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}">
+
+   
+    {% if title %}
+        <title>Image Gallery - {{ title }}</title>
+    {% else %}
+        <title>Image Gallery</title>
+    {% endif %}
+</head>
+  <body>
+    <header class="heading">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">PIXA</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('main.home') }}">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.about') }}">About</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Explore</a>
+                  </li>
+                </ul>  
+                 {% if current_user.is_authenticated %}
+                   <ul class="navbar-nav me-auto mb-2 mb-lg-0">              
+                      <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users.account') }}">Account</a>
+                      </li>
+                      <li class="nav-item"></li>
+                        <a class="nav-link"  href="{{ url_for('users.logout') }}">Logout</a>          
+                      </li>
+                    </ul>      
+                      <form class="d-flex left-form" action="{{url_for('post.search')}}" method="GET">
+                          <input class="form-control me-2" name = "q" type="search" placeholder="Search" aria-label="Search">
+                          <button class="btn btn-outline-success" type="submit">Search</button>
+                      </form>
+                  {% else %}
+                       <ul class="navbar-nav me-auto mb-2 mb-lg-0">   
+                           <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('users.login') }}">Login</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link"  href="{{ url_for('users.register') }}">Register</a>
+                          </li>
+                      </ul>
+                       <form class="d-flex left-form" action="{{url_for('post.search')}}" method="GET">
+                          <input class="form-control me-2" name = "q"  type="search" placeholder="Search" aria-label="Search">
+                          <button class="btn btn-outline-success" type="submit">Search</button>
+                        </form>
+
+                 {% endif %}        
+              </div>
+            </div>
+          </nav>
+    </header>
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+          {% block content %}{% endblock %}
+        </div>    
+      </div>
+    </main>
+                
+    {% block main_content %}{% endblock %}
+  </body>
+</html> 
+
+
+
+
+
+
+<!-- <ul class="navbar-nav ml-md-auto">
+  <li class="nav-item active"> <a class="nav-link" href="#">Link <span class="sr-only">(current)</span></a> </li>
+  <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown">My Account</a>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink"> <a class="dropdown-item" href="#">Settings</a> <a class="dropdown-item" href="#">social connect</a> <a class="dropdown-item" href="#">Privacy</a>
+          <div class="dropdown-divider"> </div> <a class="dropdown-item" href="#">Logout</a>
+      </div>
+  </li>
+</ul> -->

@@ -15,4 +15,4 @@ Pillow==8.2.0
 pyOpenSSL==20.0.1
 pandas==1.0.3
 gunicorn==20.0.4
-
+gcc7==0.0.9

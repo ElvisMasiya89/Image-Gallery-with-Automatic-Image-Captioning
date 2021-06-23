@@ -12,12 +12,7 @@ tensorflow==2.5.0
 WTForms==2.3.3
 Flask==1.1.2
 Pillow==8.2.0
-pycparser
-cryptography
-cffi
-six
 pyOpenSSL==20.0.1
-secrets==1.0.2
 pandas==1.0.3
 gunicorn==20.0.4
 

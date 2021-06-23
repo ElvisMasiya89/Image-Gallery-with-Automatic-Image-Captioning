@@ -10,6 +10,7 @@ Flask_Mail==0.9.1
 Flask_SQLAlchemy==2.5.1
 tensorflow==2.5.0
 WTForms==2.3.3
+numpy==1.21.0 
 Flask==1.1.2
 Pillow==8.2.0
 pyOpenSSL==20.0.1

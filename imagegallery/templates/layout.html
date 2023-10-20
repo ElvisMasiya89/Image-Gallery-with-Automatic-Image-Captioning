@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}">
 
-   
+
     {% if title %}
         <title>Image Gallery - {{ title }}</title>
     {% else %}
@@ -36,22 +36,22 @@
                   <li class="nav-item">
                     <a class="nav-link" href="#">Explore</a>
                   </li>
-                </ul>  
-                 {% if current_user.is_authenticated %}
-                   <ul class="navbar-nav me-auto mb-2 mb-lg-0">              
+                </ul>
+                 {% if 'user_id' in session %}
+                   <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                       <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('users.account') }}">Account</a>
                       </li>
                       <li class="nav-item"></li>
-                        <a class="nav-link"  href="{{ url_for('users.logout') }}">Logout</a>          
+                        <a class="nav-link"  href="{{ url_for('users.logout') }}">Logout</a>
                       </li>
-                    </ul>      
+                    </ul>
                       <form class="d-flex left-form" action="{{url_for('post.search')}}" method="GET">
                           <input class="form-control me-2" name = "q" type="search" placeholder="Search" aria-label="Search">
                           <button class="btn btn-outline-success" type="submit">Search</button>
                       </form>
                   {% else %}
-                       <ul class="navbar-nav me-auto mb-2 mb-lg-0">   
+                       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                            <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('users.login') }}">Login</a>
                           </li>
@@ -64,7 +64,7 @@
                           <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
 
-                 {% endif %}        
+                 {% endif %}
               </div>
             </div>
           </nav>
@@ -82,13 +82,13 @@
             {% endif %}
           {% endwith %}
           {% block content %}{% endblock %}
-        </div>    
+        </div>
       </div>
     </main>
-                
+
     {% block main_content %}{% endblock %}
   </body>
-</html> 
+</html>
 
 
 

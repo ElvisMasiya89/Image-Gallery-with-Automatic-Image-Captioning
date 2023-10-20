@@ -1,28 +1,27 @@
-from flask import (render_template, request, Blueprint)
-from flask_login import current_user
-from imagegallery import db
-from imagegallery.models import Post
-from werkzeug.utils import secure_filename
 import base64
-import cv2
-import numpy as np
-from tensorflow.keras.layers import Dense, LSTM, TimeDistributed, Embedding, Activation, RepeatVector, Concatenate,BatchNormalization
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tqdm import tqdm
-from tensorflow.keras.models import load_model
-from tensorflow.keras.applications import ResNet50
 import os
 
+import cv2
+import numpy as np
+from flask import render_template, request, Blueprint, redirect, url_for, flash, session
+from keras.layers import Dense, LSTM, TimeDistributed, Embedding, Activation, RepeatVector, Concatenate, \
+    BatchNormalization
+from keras.models import Sequential, Model
+from keras.models import load_model
+from keras.preprocessing.sequence import pad_sequences
+from keras.src.applications import ResNet50
+from tqdm import tqdm
+from werkzeug.utils import secure_filename
+
+from imagegallery import db
+from imagegallery.models import Post, User
+
 post = Blueprint('post', __name__)
-# resnet = ResNet50(include_top=False, weights='imagenet', input_shape=(224,224,3), pooling='avg')
-# resnet.save("resnet_model.h5")
+resnet = ResNet50(include_top=False, weights='imagenet', input_shape=(224,224,3), pooling='avg')
+resnet.save("resnet_model.h5")
 resnet = load_model('resnet_model.h5')
 print("=" * 50)
 print("resnet loaded")
-
-
-os.path.abspath
 
 vocab = np.load(os.path.abspath(r'imagegallery\posts\vocab.npy'), allow_pickle=True)
 vocab = vocab.item()
@@ -93,8 +92,18 @@ def prediction():
     return final
 
 
+# Custom function to check user authentication
+def is_user_authenticated():
+    return 'user_id' in session
+
+# Route for uploading images
 @post.route("/upload", methods=['GET', 'POST'])
 def upload():
+    # Check if the user is logged in
+    if not is_user_authenticated():
+        flash('Please log in to upload images.', 'info')
+        return redirect(url_for('users.login'))
+
     pic = request.files['pic']
 
     if not pic:
@@ -103,21 +112,23 @@ def upload():
     mypic = pic.read()
 
     pic.stream.seek(0)
-    # seek to the beginning of file
-    # will point to tempfile itself
-
     pic.save(os.path.abspath(r'imagegallery\static\file.jpg'))
     caption = prediction()
 
     filename = secure_filename(pic.filename)
     mimetype = pic.mimetype
-    img = Post(img=mypic, name=filename, caption=caption, mimetype=mimetype, user=current_user)
+
+    # Get the current user based on their session ID
+    user_id = session['user_id']
+    user = User.query.get(user_id)
+
+    img = Post(img=mypic, name=filename, caption=caption, mimetype=mimetype, user=user)
     db.session.add(img)
     db.session.commit()
 
     final = caption
+    flash('Image uploaded successfully!', 'success')
     return render_template("account.html", final=final)
-
 
 @post.route('/search', methods=["GET"])
 def search():
@@ -134,14 +145,8 @@ def search():
             return render_template("search_results.html", img=new_img, count=count)
 
         else:
-
             return render_template("search_results.html")
 
     else:
         return render_template("search_results.html")
-
-
-
-
-  
     
